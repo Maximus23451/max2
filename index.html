@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mludio - Portfolio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+
+
+:root {
+    --bg-color: #081b29;
+    --text-color: #ededed;
+    --second-bg-color: #112e42;
+    --main-color: #00abf0;
+    --light-bg: #f0f0f0;
+    --dark-text: #081b29;
+}
+
+[data-theme="light"] {
+    --bg-color: #f0f0f0;
+    --text-color: #081b29;
+    --second-bg-color: #ffffff;
+    --main-color: #007bff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    transition: background 0.3s, color 0.3s;
+}
+
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 100px;
+}
+
+body {
+    background: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+/* Scroll progress indicator */
+.scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 4px;
+    background: var(--main-color);
+    z-index: 999;
+    transition: width 0.3s ease;
+}
+
+/* Header styles */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 1.5rem 9%;
+    background: rgba(8, 27, 41, 0.95);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+    transition: 0.3s;
+}
+
+.logo {
+    font-size: 2.2rem;
+    font-weight: 700;
+    background: linear-gradient(45deg, #00abf0, #00ff88);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.navbar a {
+    font-size: 1.1rem;
+    color: var(--text-color);
+    text-decoration: none;
+    margin-left: 3rem;
+    position: relative;
+    transition: 0.3s;
+}
+
+.navbar a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -5px;
+    left: 0;
+    background: var(--main-color);
+    transition: 0.3s;
+}
+
+.navbar a:hover::after {
+    width: 100%;
+}
+
+/* Loading Screen */
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    font-family: 'Courier New', monospace;
+}
+
+.cat-astrophe {
+    width: 150px;
+    height: 150px;
+    margin-bottom: 2rem;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50 15C35 15 25 30 25 45c0 20 25 35 25 35s25-15 25-35c0-15-10-30-25-30zm-5 50l-5 10h10l-5-10zm10 0l5 10h-10l5-10z" fill="%2300abf0"/></svg>');
+    animation: bounce 1s infinite alternate;
+}
+
+.loading-text {
+    color: var(--main-color);
+    font-size: 1.2rem;
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.progress-container {
+    width: 200px;
+    height: 10px;
+    background: var(--second-bg-color);
+    border-radius: 5px;
+    margin-top: 1rem;
+    overflow: hidden;
+}
+
+.progress-bar {
+    width: 0%;
+    height: 100%;
+    background: var(--main-color);
+    animation: progress 3s infinite;
+    border-radius: 5px;
+}
+
+.funny-messages {
+    position: absolute;
+    bottom: 20%;
+    color: var(--main-color);
+    font-size: 0.9rem;
+    text-align: center;
+    max-width: 300px;
+}
+
+/* Theme Toggle */
+.theme-toggle {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--main-color);
+    color: white;
+    border: none;
+    cursor: pointer;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Mobile Menu */
+.mobile-menu {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 280px;
+    height: 100vh;
+    background: var(--second-bg-color);
+    transition: 0.3s;
+    z-index: 1000;
+    padding: 2rem;
+}
+
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 1.5rem;
+}
+
+/* Project Modals */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    z-index: 1000;
+}
+
+.modal-content {
+    background: var(--second-bg-color);
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    border-radius: 10px;
+    position: relative;
+}
+
+/* Animations */
+@keyframes bounce {
+    from { transform: translateY(0); }
+    to { transform: translateY(-20px); }
+}
+
+@keyframes progress {
+    0% { width: 0%; }
+    50% { width: 70%; }
+    100% { width: 100%; }
+}
+
+[data-aos] {
+    transition: opacity 0.5s, transform 0.5s;
+}
+
+[data-aos="fade-up"] {
+    transform: translateY(50px);
+    opacity: 0;
+}
+
+[data-aos="fade-up"].aos-active {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* Sections */
+.page-section {
+    min-height: 100vh;
+    padding: 100px 9% 2rem;
+    display: none;
+}
+
+.page-section.active {
+    display: block;
+}
+
+/* Home section */
+.home {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 120px 9% 0;
+}
+
+.home-content {
+    max-width: 700px;
+}
+
+.home-content h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.home-content .text-animate {
+    font-size: 2.2rem;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--main-color);
+    margin-bottom: 1.5rem;
+}
+
+.home-content p {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    max-width: 600px;
+}
+
+/* Projects grid */
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    padding: 2rem 0;
+}
+
+.project-card {
+    background: var(--second-bg-color);
+    border-radius: 15px;
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.project-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 171, 240, 0.2);
+}
+
+.project-image {
+    height: 200px;
+    background-size: cover;
+    background-position: center;
+}
+
+.project-info {
+    padding: 1.5rem;
+}
+
+/* Skills section */
+.skills-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.skill-item {
+    text-align: center;
+    padding: 1rem;
+    background: var(--second-bg-color);
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+.skill-item:hover {
+    transform: translateY(-5px);
+}
+
+.skill-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--main-color);
+}
+
+/* Contact section */
+.contact-form {
+    max-width: 600px;
+    margin: 2rem auto;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.8rem;
+    background: var(--second-bg-color);
+    border: 2px solid transparent;
+    border-radius: 8px;
+    color: var(--text-color);
+    transition: 0.3s;
+}
+
+.form-control:focus {
+    border-color: var(--main-color);
+    outline: none;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .header {
+        padding: 1rem 5%;
+    }
+
+    .navbar a {
+        margin-left: 1.5rem;
+    }
+
+    .home-content h1 {
+        font-size: 2.5rem;
+    }
+
+    .home-content .text-animate {
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar {
+        display: none;
+    }
+
+    .home {
+        padding-top: 100px;
+        text-align: center;
+    }
+}
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen">
+        <div class="cat-astrophe"></div>
+        <div class="loading-text">Initializing Awesome...</div>
+        <div class="progress-container">
+            <div class="progress-bar"></div>
+        </div>
+        <div class="funny-messages" id="loadingMessages"></div>
+    </div>
+
+    <!-- Theme Toggle -->
+    <button class="theme-toggle">
+        <i class="fas fa-moon"></i>
+        <i class="fas fa-sun" style="display: none;"></i>
+    </button>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu">
+        <button class="menu-close">&times;</button>
+        <nav>
+            <a href="#home" class="nav-link">Home</a>
+            <a href="#projects" class="nav-link">Projects</a>
+            <a href="#skills" class="nav-link">Skills</a>
+            <a href="#blog" class="nav-link">Blog</a>
+            <a href="#contact" class="nav-link">Contact</a>
+        </nav>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <a href="#home" class="logo">Mludio</a>
+        <nav class="navbar">
+            <a href="#home" class="nav-link">Home</a>
+            <a href="#projects" class="nav-link">Projects</a>
+            <a href="#skills" class="nav-link">Skills</a>
+            <a href="#blog" class="nav-link">Blog</a>
+            <a href="#contact" class="nav-link">Contact</a>
+        </nav>
+        <button class="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
+    </header>
+
+    <!-- Main Content Sections -->
+    <main>
+        <!-- Home Section -->
+        <section id="home" class="page-section active">
+            <div class="home-content">
+				<h1>Hi, I'm <span>Mludio</span></h1>
+					<div class="text-animate">
+						<h3>Fullstack Developer</h3>
+            </div>
+            <p>Building digital experiences that combine creativity with technical excellence.</p>
+        </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="page-section">
+			<h2>Featured Projects</h2>
+				<div class="projects-grid">
+            <!-- Project 1 -->
+					<div class="project-card">
+					<div class="project-image" style="background-image: url('https://via.placeholder.com/400x200')"></div>
+					<div class="project-info">
+						<h3>Project Title 1</h3>
+                    <p>Project description goes here. Briefly explain what this project is about.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section id="skills" class="page-section">
+            <!-- Skills content -->
+        </section>
+
+        <!-- Blog Section -->
+        <section id="blog" class="page-section">
+            <!-- Blog content -->
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="page-section">
+            <!-- Contact form -->
+        </section>
+    </main>
+
+    <!-- Project Modals -->
+    <div class="modal">
+        <!-- Modal content -->
+    </div>
+
+    <script>
+        // Combined JavaScript
+        document.addEventListener('DOMContentLoaded', () => {
+            // Loading screen
+            window.addEventListener('load', () => {
+                document.querySelector('.loading-screen').style.display = 'none';
+            });
+
+            // Theme toggle
+            const themeToggle = document.querySelector('.theme-toggle');
+            themeToggle.addEventListener('click', () => {
+                const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+                document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+                themeToggle.querySelector('.fa-moon').style.display = isDark ? 'none' : 'block';
+                themeToggle.querySelector('.fa-sun').style.display = isDark ? 'block' : 'none';
+                localStorage.setItem('theme', isDark ? 'light' : 'dark');
+            });
+
+            // Mobile menu
+            const menuToggle = document.querySelector('.menu-toggle');
+            const mobileMenu = document.querySelector('.mobile-menu');
+            document.querySelector('.menu-close').addEventListener('click', () => {
+                mobileMenu.style.right = '-100%';
+            });
+
+            menuToggle.addEventListener('click', () => {
+                mobileMenu.style.right = '0';
+            });
+
+            // Page navigation
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href').substring(1);
+                    document.querySelectorAll('.page-section').forEach(section => {
+                        section.classList.remove('active');
+                    });
+                    document.getElementById(targetId).classList.add('active');
+                    mobileMenu.style.right = '-100%';
+                });
+            });
+
+            // Scroll animations
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('aos-active');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('[data-aos]').forEach(el => observer.observe(el));
+
+            // Initialize theme
+            if (localStorage.getItem('theme')) {
+                document.documentElement.setAttribute('data-theme', localStorage.getItem('theme'));
+                const isDark = localStorage.getItem('theme') === 'dark';
+                themeToggle.querySelector('.fa-moon').style.display = isDark ? 'block' : 'none';
+                themeToggle.querySelector('.fa-sun').style.display = isDark ? 'none' : 'block';
+            }
+        });
+
+        // GitHub and Blog Feed Functions
+        async function loadGitHubActivity() {
+            // Previous GitHub activity code
+        }
+
+        async function loadBlogPosts() {
+            // Previous blog loading code
+        }
+
+        // Project Modal Handling
+        document.querySelectorAll('.project-card').forEach(card => {
+            card.addEventListener('click', () => {
+                // Modal display logic
+            });
+        });
+
+        // Form Handling
+        document.querySelector('.contact-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            // Form submission logic
+        });
+		
+		
+        const messages = [
+            "Feeding the code hamsters...",
+            "Waking up the developer...",
+            "Brewing fresh coffee...",
+            "Counting to 10 in binary...",
+            "Convincing AI to cooperate...",
+            "Compiling dad jokes...",
+            "Checking for alien signals...",
+            "Reheating pizza motivation...",
+            "Searching for missing semicolons...",
+            "Asking ChatGPT for help..."
+        ];
+
+        let currentMessage = 0;
+        const messageElement = document.getElementById('loadingMessages');
+
+        function updateMessage() {
+            messageElement.textContent = messages[currentMessage];
+            currentMessage = (currentMessage + 1) % messages.length;
+        }
+
+        // Change message every 3 seconds
+        setInterval(updateMessage, 3000);
+        updateMessage();
+
+        // Simulate loading completion
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.querySelector('.loading-screen').style.display = 'none';
+            }, 3000);
+        });
+    
+    </script>
+</body>
+</html>

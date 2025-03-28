@@ -496,8 +496,10 @@ body {
         document.addEventListener('DOMContentLoaded', () => {
             // Loading screen
             window.addEventListener('load', () => {
-                document.querySelector('.loading-screen').style.display = 'none';
-            });
+		    setTimeout(() => {
+        document.querySelector('.loading-screen').style.display = 'none';
+    }, 5000); // 5000 milliseconds = 5 seconds
+});
 
             // Theme toggle
             const themeToggle = document.querySelector('.theme-toggle');
@@ -605,7 +607,7 @@ body {
         window.addEventListener('load', () => {
             setTimeout(() => {
                 document.querySelector('.loading-screen').style.display = 'none';
-            }, 20000);
+            }, 5000);
         });
     
     </script>
